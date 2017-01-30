@@ -39,6 +39,10 @@ server.get('/favicon.ico', function(req, res) {
     })
 })
 
+server.all('/dimensions/type-set', function(req, res) {
+    res.status(404).send()
+})
+
 server.all('*', function(req, res) {
     var now = moment();
     var timestamp = now.format('MMMM Do YYYY, h:mm:ss a');
