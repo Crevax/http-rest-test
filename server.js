@@ -13,6 +13,25 @@ var logHeaders = function(headers) {
     console.log('---------------------')
 }
 
+var logRequest = function(req) {
+    var now = moment();
+    var timestamp = now.format('MMMM Do YYYY, h:mm:ss a');
+    var logMsg = `Request against ${req.method} ${req.originalUrl} at ${now}`;
+    console.log(logMsg);
+    logHeaders(req.headers);
+    logs.unshift({
+        message: logMsg,
+        time: now.valueOf(),
+        method: req.method,
+        headers: req.headers,
+        params: req.params,
+        path: req.path,
+        url: req.originalUrl,
+        query: req.query,
+        body: req.body
+    });
+}
+
 server.use(bodyParser.json()); // for parsing application/json
 server.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 server.use(bodyParser.text());
@@ -40,26 +59,13 @@ server.get('/favicon.ico', function(req, res) {
 })
 
 server.all('/dimensions/type-set', function(req, res) {
+    logRequest(req);
+
     res.status(404).send()
 })
 
 server.all('*', function(req, res) {
-    var now = moment();
-    var timestamp = now.format('MMMM Do YYYY, h:mm:ss a');
-    var logMsg = `Request against ${req.method} ${req.originalUrl} at ${now}`;
-    console.log(logMsg);
-    logHeaders(req.headers);
-    logs.unshift({
-        message: logMsg,
-        time: now.valueOf(),
-        method: req.method,
-        headers: req.headers,
-        params: req.params,
-        path: req.path,
-        url: req.originalUrl,
-        query: req.query,
-        body: req.body
-    });
+    logRequest(req);
 
     res.json({
         healthy: true,
