@@ -39,6 +39,13 @@ server.get('/favicon.ico', function(req, res) {
     })
 })
 
+server.all('/ping', function(req, res) {
+    res.json({
+        healthy: true,
+        message: 'API is up'
+    })
+})
+
 server.all('*', function(req, res) {
     var now = moment();
     var timestamp = now.format('MMMM Do YYYY, h:mm:ss a');
@@ -58,8 +65,16 @@ server.all('*', function(req, res) {
     });
 
     res.json({
-        healthy: true,
-        message: 'API is up'
+        success: true,
+        requestData: {
+            method: req.method,
+            headers: req.headers,
+            params: req.params,
+            path: req.path,
+            url: req.originalUrl,
+            query: req.query,
+            body: req.body
+        }
     });
 })
 
